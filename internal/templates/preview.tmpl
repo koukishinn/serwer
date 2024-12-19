@@ -1,0 +1,24 @@
+{{ define "preview" }}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="UTF-8">
+	<title>Preview: {{ .FileName }}</title>
+	<script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 p-2">
+	<a href="/files/" class="mt-4 inline-block text-blue-600">Back to file list</a>
+	
+	<div class="rounded-sm shadow-md">
+	  {{ if eq .FileType "image/png" "image/jpeg" "image/gif" }}
+      <img src="/raw/{{ .FilePath }}" class="max-w-full" alt="{{ .FileName }}" />
+	  {{ else if eq .FileType "video/mp4" "video/webm" "video/ogg" }}
+      <video controls class="w-full">
+		<source src="/raw/{{ .FilePath }}" type="{{ .FileType }}" />
+		Your browser does not support the video tag.
+      </video>
+	  {{ end }}
+	</div>
+  </body>
+</html>
+{{ end }}
