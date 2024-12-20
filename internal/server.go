@@ -7,12 +7,13 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"gitlab.com/kokishin/serwer/internal/security"
 )
 
 type Server struct {
 	e         *echo.Echo
 	s         *http.Server
-	enclave   *Enclave
+	enclave   *security.Enclave
 	directory string
 	sessions  map[string]bool
 
@@ -66,7 +67,7 @@ func NewServer(opts *ServerOpts) *Server {
 	return &Server{
 		e:         e,
 		s:         s,
-		enclave:   &Enclave{},
+		enclave:   security.NewEnclave(),
 		directory: opts.Directory,
 		sessions:  make(map[string]bool),
 		logger:    opts.Logger,
@@ -76,6 +77,8 @@ func NewServer(opts *ServerOpts) *Server {
 
 func (s *Server) Start() {
 	s.e.Static("/", "www")
+
+	s.e.GET("/", s.handleApplication, s.authentication)
 
 	s.e.POST("/login", s.handleLogin)
 
