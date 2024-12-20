@@ -12,7 +12,7 @@ type File struct {
 	Path  string
 }
 
-// Read a directory, giving back
+// Read a directory, giving back a list of files and subdirectories
 func Read(dir string) ([]File, error) {
 	var files []File
 
