@@ -6,7 +6,7 @@ import (
 	"os"
 	"os/signal"
 
-	"gitlab.com/kokishin/server/internal"
+	"gitlab.com/kokishin/serwer/internal"
 )
 
 var (
@@ -16,7 +16,7 @@ var (
 func main() {
 	flag.Parse()
 
-	handler := slog.NewJSONHandler(os.Stdout, nil)
+	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelWarn})
 	logger := slog.New(handler)
 
 	server := internal.NewServer(&internal.ServerOpts{Logger: logger, Directory: *directory})
