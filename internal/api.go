@@ -12,8 +12,8 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v4"
-	"gitlab.com/kokishin/server/internal/functional"
-	"gitlab.com/kokishin/server/internal/ios"
+	"gitlab.com/kokishin/serwer/internal/functional"
+	"gitlab.com/kokishin/serwer/internal/ios"
 )
 
 func (s *Server) handleLogin(c echo.Context) error {
@@ -21,7 +21,7 @@ func (s *Server) handleLogin(c echo.Context) error {
 	password := c.FormValue("password")
 
 	if username == "admin" && password == "kokishin" {
-		id, err := s.enclave.Generate()
+		id, err := s.enclave.Nonce()
 		if err != nil {
 			return c.HTML(http.StatusInternalServerError, "500")
 		}
@@ -35,15 +35,32 @@ func (s *Server) handleLogin(c echo.Context) error {
 			SameSite: http.SameSiteStrictMode,
 		})
 
-		return c.HTML(http.StatusOK, `<script>window.location.href='/files';</script>`)
+		return c.HTML(http.StatusOK, `<script>window.location.href='/app';</script>`)
 	}
 
-	return c.HTML(http.StatusUnauthorized, `<div class="text-red-600 font-semibold">unauthorized</div>`)
+	return c.String(http.StatusUnauthorized, "credenciais inválidas")
+}
+
+func (s *Server) handleApplication(c echo.Context) error {
+	return c.File("www/application.html")
+}
+
+func (s *Server) handleSettings(c echo.Context) error {
+	return c.File("www/settings.html")
+}
+
+func (s *Server) handleVersion(c echo.Context) error {
+	return c.String(http.StatusOK, version)
 }
 
 func (s *Server) handleFiles(c echo.Context) error {
 	path := c.Param("*")
+
+	if !strings.HasPrefix(path, "/") {
+		path = "/" + path
+	}
 	if !strings.HasPrefix(path, s.directory) {
+		s.logger.Warn("", slog.String("old-path", path), slog.String("prefix", s.directory))
 		path = filepath.Join(s.directory, path)
 	}
 
@@ -59,6 +76,7 @@ func (s *Server) handleFiles(c echo.Context) error {
 
 	files, err := ios.Read(path)
 	if err != nil {
+		s.logger.Error("failed to read directory", slog.Any("error", err))
 		return c.String(http.StatusInternalServerError, "unable to read directory")
 	}
 
@@ -85,7 +103,7 @@ func (s *Server) handleFiles(c echo.Context) error {
 	}
 
 	tmpl := template.Must(
-		template.New("files").Funcs(TemplateFunctions).ParseFiles("internal/templates/files.tmpl"),
+		template.New("files").Funcs(TemplateFunctions).ParseFiles(TemplateFiles.Path()),
 	)
 
 	return tmpl.Execute(c.Response().Writer, data)
@@ -109,7 +127,7 @@ func (s *Server) handlePreview(c echo.Context) error {
 	}
 
 	tmpl := template.Must(
-		template.New("preview").Funcs(TemplateFunctions).ParseFiles("internal/templates/preview.tmpl"),
+		template.New("preview").Funcs(TemplateFunctions).ParseFiles(TemplatePreview.Path()),
 	)
 
 	return tmpl.Execute(c.Response().Writer, data)

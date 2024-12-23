@@ -78,9 +78,13 @@ func NewServer(opts *ServerOpts) *Server {
 func (s *Server) Start() {
 	s.e.Static("/", "www")
 
-	s.e.GET("/", s.handleApplication, s.authentication)
-
 	s.e.POST("/login", s.handleLogin)
+
+	s.e.GET("/app", s.handleApplication, s.authentication)
+	s.e.GET("/settings", s.handleSettings, s.authentication)
+
+	// endpoints to be used by the application
+	s.e.GET("/version", s.handleVersion)
 
 	s.e.GET("/files", s.handleFiles, s.authentication)
 	s.e.GET("/files/*", s.handleFiles, s.authentication)
@@ -106,7 +110,7 @@ func (s *Server) Done() <-chan bool {
 func (s *Server) authentication(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		cookie, err := c.Cookie("session")
-
+		return next(c)
 		if err != nil || !s.sessions[cookie.Value] {
 			return c.Redirect(http.StatusMovedPermanently, "/")
 		}
