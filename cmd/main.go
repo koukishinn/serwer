@@ -31,9 +31,9 @@ func main() {
 
 	select {
 	case <-server.Done():
-		slog.Info("bye...")
+		logger.Info("bye...")
 	case <-signals:
-		slog.Info("being killed is not nice...")
+		logger.Info("being killed is not nice...")
 		os.Exit(0)
 	}
 }
