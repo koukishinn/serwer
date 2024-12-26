@@ -7,16 +7,19 @@ import (
 	"os/signal"
 
 	"gitlab.com/kokishin/serwer/internal"
+	"gitlab.com/kokishin/serwer/internal/logger"
 )
 
 var (
 	directory = flag.String("directory", ".", "the directory to be served")
+	level     = flag.String("level", "warn", "the level used in the logger (info|warn|error|debug)")
 )
 
 func main() {
 	flag.Parse()
 
-	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelWarn})
+	level := logger.Into(*level)
+	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: level.ToSlogLevel()})
 	logger := slog.New(handler)
 
 	server := internal.NewServer(&internal.ServerOpts{Logger: logger, Directory: *directory})
