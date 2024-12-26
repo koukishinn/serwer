@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"html/template"
 	"log/slog"
 	"mime"
@@ -81,7 +80,7 @@ func (s *Server) handleFiles(c echo.Context) error {
 	}
 
 	functional.ForEach(files, func(e ios.File) {
-		fmt.Println(e.Name)
+		s.logger.Debug("", slog.String("name", e.Name), slog.String("path", e.Path))
 	})
 
 	totalFiles := len(files)
