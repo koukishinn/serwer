@@ -29,9 +29,7 @@
 	</svg>
 	back
   </button>
-  <button hx-get="/files/{{ .FilePath }}"
-		  hx-target="#file-viewer"
-		  hx-swap="innerHTML"
+  <button onclick="download('{{ .FilePath  }}')"
 		  class="flex items-center p-2 rounded uppercase transition-all duration-75 bg-zinc-100 hover:bg-zinc-200">
 	<svg xmlns="http://www.w3.org/2000/svg"
 		 fill="none"
@@ -44,4 +42,18 @@
 	download
   </button>
 </div>
+
+<script>
+ function download(filepath) {
+	 const link = document.createElement('a');
+	 link.href = `/raw/${filepath}`;
+	 link.download = '';
+	 
+	 document.body.appendChild(link);
+
+	 link.click();
+
+	 document.body.removeChild(link);
+ }
+</script>
 {{ end }}
