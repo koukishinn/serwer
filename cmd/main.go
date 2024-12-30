@@ -18,7 +18,7 @@ var (
 func main() {
 	flag.Parse()
 
-	level := logger.Into(*level)
+	level := logger.From(*level)
 	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: level.ToSlogLevel()})
 	logger := slog.New(handler)
 

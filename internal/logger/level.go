@@ -11,7 +11,7 @@ const (
 	Debug LoggerLevel = "debug"
 )
 
-func Into(l string) LoggerLevel {
+func From(l string) LoggerLevel {
 	return LoggerLevel(l)
 }
 
