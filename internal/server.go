@@ -91,7 +91,7 @@ func (s *Server) Start() {
 	s.e.GET("/preview/*", s.handlePreview, s.authentication)
 	s.e.GET("/raw/*", s.handleRaw, s.authentication)
 
-	s.logger.Info("starting server")
+	s.logger.Info("starting server", slog.String("address", s.s.Addr))
 
 	if err := s.s.ListenAndServe(); err != http.ErrServerClosed {
 		s.done <- true
