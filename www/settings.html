@@ -7,7 +7,7 @@
 	<script src="https://cdn.tailwindcss.com"></script>
 	<script src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
   </head>
-  <body class="bg-white flex flex-col">
+  <body class="bg-white flex flex-col min-h-screen">
 	<nav class="p-5">
 	  <ul class="flex flex-row uppercase">
 		<li class="grow"></li>
@@ -40,8 +40,10 @@
 		</li>
 	  </ul>
 	</nav>
-	<main class="p-5 min-h-screen grow">
-	  Nada para ver por aqui...
+	<main class="flex-grow p-5">
+	  <div class="flex justify-center p-9 bg-zinc-100 font-bold">
+		Nada para ver por aqui...
+	  </div>
 	</main>
 	<footer class="flex flex-row bg-zinc-950 text-white font-mono p-5">
 	  <div class="flex grow items-center text-xs">
