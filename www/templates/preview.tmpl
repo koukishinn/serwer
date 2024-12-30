@@ -1,15 +1,15 @@
 {{ define "preview" }}
-<div class="rounded-sm">
+<div class="rounded">
   {{ if eq .FileType "image/png" "image/jpeg" "image/gif" }}
   <img src="/raw/{{ .FilePath }}" class="max-w-full" alt="{{ .FileName }}" />
   {{ else if eq .FileType "video/mp4" "video/webm" "video/ogg" }}
   <video controls class="w-full">
 	<source src="/raw/{{ .FilePath }}" type="{{ .FileType }}" />
-	Your browser does not support the video tag.
+	Seu navegador não suporta a tag de vídeo
   </video>
   {{ else  }}
   <span class="p-9 bg-zinc-100 flex justify-center rounded font-bold">
-	There's no preview for this file
+	Não há visualização padrão para esse arquivo
   </span>
   {{ end }}
 </div>
