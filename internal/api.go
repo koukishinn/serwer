@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"mime"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -116,6 +117,8 @@ func (s *Server) handlePreview(c echo.Context) error {
 	if !strings.HasPrefix(path, s.directory) {
 		path = filepath.Join(s.directory, path)
 	}
+
+	path, _ = url.PathUnescape(path)
 
 	info, err := os.Stat(path)
 	if err != nil || info.IsDir() {
