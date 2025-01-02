@@ -15,7 +15,7 @@
 </div>
 
 <div class="flex justify-between items-center mt-3">
-  <button hx-get="/files"
+  <button hx-get="/files/{{ .Path }}"
 		  hx-target="#file-viewer"
 		  hx-swap="innerHTML"
 		  class="flex items-center p-2 rounded uppercase transition-all duration-75 bg-zinc-100 hover:bg-zinc-200">
@@ -29,7 +29,7 @@
 	</svg>
 	back
   </button>
-  <button onclick="download('{{ .FilePath  }}')"
+  <button onclick="download('{{ .FilePath }}')"
 		  class="flex items-center p-2 rounded uppercase transition-all duration-75 bg-zinc-100 hover:bg-zinc-200">
 	<svg xmlns="http://www.w3.org/2000/svg"
 		 fill="none"
