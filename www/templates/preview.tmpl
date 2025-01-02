@@ -1,9 +1,9 @@
 {{ define "preview" }}
-<div class="rounded">
+<div>
   {{ if eq .FileType "image/png" "image/jpeg" "image/gif" }}
-  <img src="/raw/{{ .FilePath }}" class="max-w-full" alt="{{ .FileName }}" />
+  <img src="/raw/{{ .FilePath }}" class="max-w-full rounded" alt="{{ .FileName }}" />
   {{ else if eq .FileType "video/mp4" "video/webm" "video/ogg" }}
-  <video controls class="w-full">
+  <video controls class="w-full rounded">
 	<source src="/raw/{{ .FilePath }}" type="{{ .FileType }}" />
 	Seu navegador não suporta a tag de vídeo
   </video>
