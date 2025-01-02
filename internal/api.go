@@ -58,6 +58,9 @@ func (s *Server) handleFiles(c echo.Context) error {
 	if !strings.HasPrefix(path, "/") {
 		path = "/" + path
 	}
+	if !strings.HasSuffix(path, "/") {
+		path += "/"
+	}
 	if !strings.HasPrefix(path, s.directory) {
 		s.logger.Warn("", slog.String("old-path", path), slog.String("prefix", s.directory))
 		path = filepath.Join(s.directory, path)
@@ -120,6 +123,7 @@ func (s *Server) handlePreview(c echo.Context) error {
 	}
 
 	data := map[string]interface{}{
+		"Path":     filepath.Dir(path),
 		"FileName": info.Name(),
 		"FilePath": path,
 		"FileType": mime.TypeByExtension(filepath.Ext(path)),
