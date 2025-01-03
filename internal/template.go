@@ -24,9 +24,11 @@ var (
 			return filepath.Join(s, p)
 		},
 		"truncate": func(n float64) float64 {
+			// FIXME: I have to figure out how to get the exponent to know how I should
+			// divide the final number
 			mask := int64(n*100) & 0xFFF
 
-			return float64(mask) / 100
+			return float64(mask)
 		},
 	}
 )
