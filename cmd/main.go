@@ -13,6 +13,7 @@ import (
 var (
 	directory = flag.String("directory", ".", "the directory to be served")
 	level     = flag.String("level", "warn", "the level used in the logger (info|warn|error|debug)")
+	security  = flag.String("security", "", "the file used to validate authentication of users, it should be a CSV structured file, with a user and a hashed password (SHA512) per line. If this variable is nil it won't use authentication for any of the internal endpoints")
 )
 
 func main() {
@@ -22,7 +23,12 @@ func main() {
 	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: level.ToSlogLevel()})
 	logger := slog.New(handler)
 
-	server := internal.NewServer(&internal.ServerOpts{Logger: logger, Directory: *directory})
+	server, _ := internal.NewServer(&internal.ServerOpts{
+		Logger:             logger,
+		Directory:          *directory,
+		AuthenticationFile: *security,
+	})
+
 	go server.Start()
 
 	signals := make(chan os.Signal)

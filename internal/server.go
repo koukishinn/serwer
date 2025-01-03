@@ -14,6 +14,7 @@ type Server struct {
 	e         *echo.Echo
 	s         *http.Server
 	enclave   *security.Enclave
+	store     *security.SecureStore
 	directory string
 	sessions  map[string]bool
 
@@ -23,11 +24,12 @@ type Server struct {
 }
 
 type ServerOpts struct {
-	Logger    *slog.Logger
-	Directory string
+	Logger             *slog.Logger
+	Directory          string
+	AuthenticationFile string
 }
 
-func NewServer(opts *ServerOpts) *Server {
+func NewServer(opts *ServerOpts) (*Server, error) {
 	e := echo.New()
 
 	e.Pre(middleware.RemoveTrailingSlash())
@@ -64,15 +66,27 @@ func NewServer(opts *ServerOpts) *Server {
 		Handler: e,
 	}
 
+	var err error
+	var store *security.SecureStore = nil
+
+	if len(opts.AuthenticationFile) > 0 {
+		store, err = security.NewSecureStore(&security.SecureStoreOpts{File: opts.AuthenticationFile})
+		if err != nil {
+			opts.Logger.Error("failed to create a secure store", slog.Any("error", err))
+			return nil, err
+		}
+	}
+
 	return &Server{
 		e:         e,
 		s:         s,
 		enclave:   security.NewEnclave(),
+		store:     store,
 		directory: opts.Directory,
 		sessions:  make(map[string]bool),
 		logger:    opts.Logger,
 		done:      make(chan bool),
-	}
+	}, nil
 }
 
 func (s *Server) Start() {
@@ -109,8 +123,12 @@ func (s *Server) Done() <-chan bool {
 
 func (s *Server) authentication(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
+		if s.store == nil {
+			return next(c)
+		}
+
 		cookie, err := c.Cookie("session")
-		return next(c)
+
 		if err != nil || !s.sessions[cookie.Value] {
 			return c.Redirect(http.StatusMovedPermanently, "/")
 		}

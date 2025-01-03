@@ -17,13 +17,23 @@ import (
 )
 
 func (s *Server) handleLogin(c echo.Context) error {
+	if s.store == nil {
+		return c.HTML(http.StatusOK, `<script>window.location.href='/app';</script>`)
+	}
+
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 
-	if username == "admin" && password == "kokishin" {
+	check, err := s.store.Check(username, password)
+	if err != nil {
+		s.logger.Error("failed to authenticate", slog.Any("error", err))
+		c.HTML(http.StatusInternalServerError, "falha ao autenticar")
+	}
+
+	if check {
 		id, err := s.enclave.Nonce()
 		if err != nil {
-			return c.HTML(http.StatusInternalServerError, "500")
+			return c.HTML(http.StatusInternalServerError, "falha ao autenticar")
 		}
 
 		s.sessions[id] = true
