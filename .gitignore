@@ -1,6 +1,11 @@
 #
-# Files
+# files
 #
 *.out
 *.zip
 *.csv
+
+#
+# folders
+#
+*node_modules*
