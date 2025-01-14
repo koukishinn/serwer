@@ -1,5 +1,5 @@
 {{ define "files" }}
-<nav class="mb-4 bg-zinc-50 p-2 rounded flex flex-row items-center">
+<nav class="mb-4 bg-zinc-50 p-2 rounded flex flex-row items-center overflow-x-auto">
   {{ $path := "" }}
   {{ range $index, $dir := split .CurrentPath "/" }}
   {{ if ne $dir "" }}
