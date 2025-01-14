@@ -5,6 +5,8 @@
 *.zip
 *.csv
 
+serwer
+
 tailwind/*.css
 
 #
